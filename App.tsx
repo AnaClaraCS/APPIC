@@ -1,117 +1,112 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, PermissionsAndroid, Platform, FlatList, StyleSheet } from 'react-native';
+import WifiManager, { WifiEntry } from 'react-native-wifi-reborn'; // Importando o tipo WifiEntry
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const App = () => {
+  const [wifiList, setWifiList] = useState<any[]>([]);
+  const [permissao, setPermissao] = useState(false);
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  useEffect(() => {
+    const pedindoPermissao = async () => {
+      if (Platform.OS === 'android') { // Se for Android
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+              title: 'Acesso a localização é necessária para identificar Wifis',
+              message: 'Esse aplicativo precisa de acesso a localização para listar as redes wifi próximas.',
+              buttonNegative: 'Não permitir',
+              buttonPositive: 'Permitir',
+            },
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("Permitido");
+            setPermissao(true);
+          } else {
+            console.log("Erro");
+            setPermissao(false);
+          }
+        } catch (err) {
+          console.warn(err);
+          setPermissao(false);
+        }
+      } else { // Se for IOS nao precisa da localização (tem outro processo, mas não vou focar nisso agora)
+        setPermissao(true);
+      }
+    };
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+    pedindoPermissao();
+  }, []); // fechando o useEffect
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const getWifiList = async () => {
+    if (permissao) {
+      try {
+        const wifiArray = await WifiManager.loadWifiList();
+        //console.log('WiFi list:', wifiArray);
+        const sortedWifiList = wifiArray.sort((a, b) => b.level - a.level); // Ordena por nível de sinal decrescente
+        setWifiList(sortedWifiList);
+      } catch (error) {
+        console.log('Error fetching WiFi list!', error);
+        setWifiList([]);
+      }
+    } else {
+      console.log('Permissão de localização não concedida');
+    }
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+  const renderItem = ({ item }: { item: WifiEntry }) => ( // Especificando o tipo WifiEntry para o item
+  <View style={styles.row}>
+    <Text style={styles.cell}>{item.SSID}</Text>
+    <Text style={styles.cell}>{item.level}</Text>
+  </View>
+);
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  return (
+    <View >
+      <Button title="Gerar lista de wifi" onPress={getWifiList} />
+      <FlatList
+        data={wifiList}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.BSSID}
+        ListHeaderComponent={() => (
+          <View style={styles.headerRow}>
+            <Text style={styles.headerCell}>Nome (SSID)</Text>
+            <Text style={styles.headerCell}>RSSI (Level)</Text>
+          </View>
+        )}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({ // Definindo os estilos aqui
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  cell: {
+    flex: 1,
+    textAlign: 'center',
   },
-  highlight: {
-    fontWeight: '700',
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    fontWeight: 'bold',
+  },
+  headerCell: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 
