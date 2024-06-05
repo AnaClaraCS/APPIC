@@ -1,5 +1,5 @@
 import express from 'express';
-import LocalController from '../controllers/LocalController';
+import LocalController from '../controllers/localController.js';
 import Local from '../models/local';
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.post('/locais', async (req, res) => {
   try {
     const novoLocal = new Local(req.body);
     await LocalController.criarLocal(novoLocal);
+    await console.log("rota post " + novoLocal);
     res.status(201).send({ message: 'Local criado com sucesso!' });
   } catch (error) {
     res.status(500).send({ message: 'Erro ao criar o local', error: error.message });
@@ -19,6 +20,7 @@ router.post('/locais', async (req, res) => {
 // Obter todos os locais
 router.get('/locais', async (req, res) => {
   try {
+    await console.log("get");
     const locais = await localController.obterLocais();
     res.status(200).send(locais);
   } catch (error) {

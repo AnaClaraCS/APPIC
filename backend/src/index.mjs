@@ -4,16 +4,13 @@ import localRoutes from './routes/localRoutes.js';
 import redeRoutes from './routes/redeRoutes.js';
 import leituraRoutes from './routes/leituraRoutes.js';
 
-// Crie uma instância do Express
 const app = express();
-
-// Defina a porta
 const port = process.env.PORT || 3000;
 
 // Middleware para analisar JSON
 app.use(bodyParser.json());
 
-// Registre as rotas
+// Definindo as rotas
 app.use('/api', localRoutes);
 app.use('/api', redeRoutes);
 app.use('/api', leituraRoutes);

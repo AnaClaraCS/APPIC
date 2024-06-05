@@ -11,6 +11,7 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 import com.reactlibrary.rnwifi.RNWifiPackage; 
+import android.os.Bundle;
 
 class MainApplication : Application(), ReactApplication {
 
@@ -35,11 +36,13 @@ class MainApplication : Application(), ReactApplication {
     get() = getDefaultReactHost(applicationContext, reactNativeHost)
 
   override fun onCreate() {
+    // Instalando react-natigation
     super.onCreate()
-    SoLoader.init(this, false)
-    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+    
+//    SoLoader.init(this, false)
+//    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
-      load()
-    }
+//      load()
+//    }
   }
 }

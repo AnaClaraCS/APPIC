@@ -1,40 +1,42 @@
 import { getDatabase, ref, set, get, update, remove } from 'firebase/database';
-import { database } from '../../firebase';
-import Rede from '../models/rede';
+import { database } from '../../firebase.js';
+//import Rede from '../models/rede';
 
 class RedeController {
-  private database = database;
+  constructor() {
+    this.database = database;
+  }
 
   // Criar uma nova rede
-  async criarRede(rede: Rede): Promise<void> {
+  async criarRede(rede) {
     await set(ref(this.database, `redes/${rede.bssid}`), rede);
   }
 
   // Obter todas as redes
-  async obterRedes(): Promise<Rede[]> {
+  async obterRedes() {
     const snapshot = await get(ref(this.database, 'redes'));
-    const redes: Rede[] = [];
+    const redes = [];
     snapshot.forEach((childSnapshot) => {
-      const rede: Rede = childSnapshot.val();
+      const rede = childSnapshot.val();
       redes.push(rede);
     });
     return redes;
   }
 
   // Obter uma rede específica pelo BSSID
-  async obterRede(bssid: string): Promise<Rede | null> {
+  async obterRede(bssid) {
     const snapshot = await get(ref(this.database, `redes/${bssid}`));
-    const rede: Rede = snapshot.val();
+    const rede = snapshot.val();
     return rede || null;
   }
 
   // Atualizar uma rede
-  async atualizarRede(bssid: string, dadosAtualizados: Partial<Rede>): Promise<void> {
+  async atualizarRede(bssid, dadosAtualizados) {
     await update(ref(this.database, `redes/${bssid}`), dadosAtualizados);
   }
 
   // Deletar uma rede
-  async deletarRede(bssid: string): Promise<void> {
+  async deletarRede(bssid) {
     await remove(ref(this.database, `redes/${bssid}`));
   }
 }

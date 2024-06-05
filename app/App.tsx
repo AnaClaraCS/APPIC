@@ -1,113 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, PermissionsAndroid, Platform, FlatList, StyleSheet } from 'react-native';
-import WifiManager, { WifiEntry } from 'react-native-wifi-reborn'; // Importando o tipo WifiEntry
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+// @ts-ignore
+import NovoLocal from './src/pages/Local/NovoLocal';
+// @ts-ignore
+import Locais from './src/pages/Local/Locais';
+// @ts-ignore
+import NovaRede from './src/pages/Rede/NovaRede';
+// @ts-ignore
+import NovaLeitura from './src/pages/Leitura/NovaLeitura';
+// @ts-ignore
+import Home from './src/pages/home';
+// @ts-ignore
+import GeraListaWifi from './src/pages/GeraListaWifi';
 
-const App = () => {
-  const [wifiList, setWifiList] = useState<any[]>([]);
-  const [permissao, setPermissao] = useState(false);
+const Stack = createStackNavigator();
 
-  useEffect(() => {
-    const pedindoPermissao = async () => {
-      if (Platform.OS === 'android') { // Se for Android
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            {
-              title: 'Acesso a localização é necessária para identificar Wifis',
-              message: 'Esse aplicativo precisa de acesso a localização para listar as redes wifi próximas.',
-              buttonNegative: 'Não permitir',
-              buttonPositive: 'Permitir',
-            },
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("Permitido");
-            setPermissao(true);
-          } else {
-            console.log("Erro");
-            setPermissao(false);
-          }
-        } catch (err) {
-          console.warn(err);
-          setPermissao(false);
-        }
-      } else { // Se for IOS nao precisa da localização (tem outro processo, mas não vou focar nisso agora)
-        setPermissao(true);
-      }
-    };
-
-    pedindoPermissao();
-  }, []); // fechando o useEffect
-
-  const getWifiList = async () => {
-    if (permissao) {
-      try {
-        const wifiArray = await WifiManager.loadWifiList();
-        //console.log('WiFi list:', wifiArray);
-        const sortedWifiList = wifiArray.sort((a, b) => b.level - a.level); // Ordena por nível de sinal decrescente
-        setWifiList(sortedWifiList);
-      } catch (error) {
-        console.log('Error fetching WiFi list!', error);
-        setWifiList([]);
-      }
-    } else {
-      console.log('Permissão de localização não concedida');
-    }
-  };
-
-  const renderItem = ({ item }: { item: WifiEntry }) => ( // Especificando o tipo WifiEntry para o item
-  <View style={styles.row}>
-    <Text style={styles.cell}>{item.SSID}</Text>
-    <Text style={styles.cell}>{item.level}</Text>
-  </View>
-);
-
+export default function App() {
   return (
-    <View >
-      <Button title="Gerar lista de wifi" onPress={getWifiList} />
-      <FlatList
-        data={wifiList}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.BSSID}
-        ListHeaderComponent={() => (
-          <View style={styles.headerRow}>
-            <Text style={styles.headerCell}>Nome (SSID)</Text>
-            <Text style={styles.headerCell}>RSSI (Level)</Text>
-          </View>
-        )}
-      />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={Home} options={{ title: 'Home' }} />
+        <Stack.Screen name="NovaRede" component={NovaRede} options={{ title: 'Nova Rede' }} />
+        <Stack.Screen name="NovoLocal" component={NovoLocal} options={{ title: 'Novo Local' }} />
+        <Stack.Screen name="NovaLeitura" component={NovaLeitura} options={{ title: 'Nova Leitura' }} />
+        <Stack.Screen name="Locais" component={Locais} options={{ title: 'Locais' }} />
+        <Stack.Screen name="GeraListaWifi" component={GeraListaWifi} options={{ title: 'GeraListaWifi' }} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
-
-const styles = StyleSheet.create({ // Definindo os estilos aqui
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  cell: {
-    flex: 1,
-    textAlign: 'center',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#000',
-    fontWeight: 'bold',
-  },
-  headerCell: {
-    flex: 1,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-});
-
-export default App;
+}

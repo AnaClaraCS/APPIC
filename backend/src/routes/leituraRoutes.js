@@ -1,5 +1,5 @@
 import express from 'express';
-import LeituraController from '../controllers/leituraController';
+import LeituraController from '../controllers/leituraController.js';
 
 const router = express.Router();
 const leituraController = new LeituraController();

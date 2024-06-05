@@ -1,40 +1,46 @@
 import { getDatabase, ref, set, get, update, remove } from 'firebase/database';
-import { database } from '../../firebase';
+import { database } from '../../firebase.js';
 import Local from '../models/local';
 
 class LocalController {
-  private database = database;
+  constructor() {
+    this.database = database;
+  }
 
   // Criar um novo local
-  async criarLocal(local: Local): Promise<void> {
-    await set(ref(this.database, `locais/${local.idLocal}`), local);
+  async criarLocal(local) {
+    await console.log("Chegamos no controller");
+    const idLocal = await push(ref(this.database, 'locais')).key;
+    const novoLocal = { ...local, idLocal };
+    console.log(novoLocal);
+    await set(ref(this.database, `locais/${idLocal}`), novoLocal);
   }
 
   // Obter todos os locais
-  async obterLocais(): Promise<Local[]> {
+  async obterLocais() {
     const snapshot = await get(ref(this.database, 'locais'));
-    const locais: Local[] = [];
+    const locais = [];
     snapshot.forEach((childSnapshot) => {
-      const local: Local = childSnapshot.val();
+      const local = childSnapshot.val();
       locais.push(local);
     });
     return locais;
   }
 
   // Obter um local específico pelo ID
-  async obterLocal(id: string): Promise<Local | null> {
+  async obterLocal(id) {
     const snapshot = await get(ref(this.database, `locais/${id}`));
-    const local: Local = snapshot.val();
+    const local = snapshot.val();
     return local || null;
   }
 
   // Atualizar um local
-  async atualizarLocal(id: string, dadosAtualizados: Partial<Local>): Promise<void> {
+  async atualizarLocal(id, dadosAtualizados) {
     await update(ref(this.database, `locais/${id}`), dadosAtualizados);
   }
 
   // Deletar um local
-  async deletarLocal(id: string): Promise<void> {
+  async deletarLocal(id) {
     await remove(ref(this.database, `locais/${id}`));
   }
 }

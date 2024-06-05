@@ -18,6 +18,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["**/*"],
+  "include": ["**/*", "declarations.d.ts"],
   "exclude": ["node_modules"]
 }

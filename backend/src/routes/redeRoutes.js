@@ -1,6 +1,6 @@
 import express from 'express';
-import RedeController from '../controllers/redeController';
-import Rede from '../models/rede';
+import RedeController from '../controllers/redeController.js';
+//import Rede from '../models/rede';
 
 const router = express.Router();
 const redeController = new RedeController();
