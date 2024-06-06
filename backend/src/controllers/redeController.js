@@ -1,15 +1,28 @@
 import { getDatabase, ref, set, get, update, remove } from 'firebase/database';
 import { database } from '../../firebase.js';
-//import Rede from '../models/rede';
+import Rede from '../models/rede.js';
 
 class RedeController {
   constructor() {
     this.database = database;
   }
 
+  // Função para codificar o BSSID para ser aceito como chave no Firebase
+  codificarBSSID(bssid) {
+    return bssid.toString().replace(/:/g, '_');
+  }
+
+  // Função para decodificar o BSSID para o formato original
+  decodificarBSSID(bssid) {
+    return bssid.toString.replace(/_/g, ':');
+  }
+
   // Criar uma nova rede
-  async criarRede(rede) {
-    await set(ref(this.database, `redes/${rede.bssid}`), rede);
+  async criarRede(redeData) {
+    const { bssid, nome } = redeData;
+    const novaRede = new Rede(bssid, nome);
+    novaRede.bssid = this.codificarBSSID(bssid);
+    await set(ref(this.database, `redes/${bssidCodificado}`), novaRede);
   }
 
   // Obter todas as redes

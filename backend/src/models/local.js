@@ -1,11 +1,12 @@
-// Define um objeto Local como um modelo
-const Local = {
-    idLocal: '',
-    x: 0,
-    y: 0,
-    andar: 0,
-    descricao: ''
-};
-
-// Exporta o modelo Local
-export default Local;
+class Local {
+    constructor({ andar, descricao, x, y }, idLocal = '') {
+      this.idLocal = idLocal;
+      this.andar = andar;
+      this.descricao = descricao;
+      this.x = x;
+      this.y = y;
+    }
+  }
+  
+  export default Local;
+  

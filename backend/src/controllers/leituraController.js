@@ -24,14 +24,13 @@ class LeituraController {
     const data = new Date();
 
     // Criar uma referência única para a nova leitura
-    const novaLeituraRef = push(ref(this.database, 'leituras'));
-    const idLeitura = novaLeituraRef.key; // Assegurando que idLeitura é uma string
+    const idLeitura = push(ref(this.database, 'leituras')).key; // Assegurando que idLeitura é uma string
 
     // Combinar a leitura com a data de criação e idLeitura
     const novaLeitura = { ...leitura, data, idLeitura };
 
     // Salvar a nova leitura no Firebase
-    await set(novaLeituraRef, novaLeitura);
+    await set(ref(this.database, `leituras/${idLeitura}`), novaLeitura);
   }
 
   // Obter todas as leituras

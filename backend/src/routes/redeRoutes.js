@@ -1,6 +1,6 @@
 import express from 'express';
 import RedeController from '../controllers/redeController.js';
-//import Rede from '../models/rede';
+import Rede from '../models/rede.js';
 
 const router = express.Router();
 const redeController = new RedeController();
@@ -8,7 +8,7 @@ const redeController = new RedeController();
 // Criar uma nova rede
 router.post('/redes', async (req, res) => {
   try {
-    const novaRede = new Rede(req.body);
+    const novaRede = new Rede(req.body.bssid, req.body.nome);
     await redeController.criarRede(novaRede);
     res.status(201).send({ message: 'Rede criada com sucesso!' });
   } catch (error) {

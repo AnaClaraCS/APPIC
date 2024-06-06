@@ -1,6 +1,6 @@
-import { getDatabase, ref, set, get, update, remove } from 'firebase/database';
+import { getDatabase, ref, set, get, update, remove, push } from 'firebase/database';
 import { database } from '../../firebase.js';
-import Local from '../models/local';
+import Local from '../models/local.js';
 
 class LocalController {
   constructor() {
@@ -8,11 +8,9 @@ class LocalController {
   }
 
   // Criar um novo local
-  async criarLocal(local) {
-    await console.log("Chegamos no controller");
+  async criarLocal(localData) {
     const idLocal = await push(ref(this.database, 'locais')).key;
-    const novoLocal = { ...local, idLocal };
-    console.log(novoLocal);
+    const novoLocal = new Local(localData, idLocal);
     await set(ref(this.database, `locais/${idLocal}`), novoLocal);
   }
 
