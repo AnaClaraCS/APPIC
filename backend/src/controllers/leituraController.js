@@ -21,13 +21,15 @@ class LeituraController {
     }
 
     // Criar a data de criação
-    const data = new Date();
+    const data = new Date().toLocaleString(); // Converte a data para uma string no formato ISO 8601
 
     // Criar uma referência única para a nova leitura
     const idLeitura = push(ref(this.database, 'leituras')).key; // Assegurando que idLeitura é uma string
 
     // Combinar a leitura com a data de criação e idLeitura
-    const novaLeitura = { ...leitura, data, idLeitura };
+    const novaLeitura = { ...leitura, data: data, idLeitura };
+    console.log(novaLeitura);
+    console.log(novaLeitura.data);
 
     // Salvar a nova leitura no Firebase
     await set(ref(this.database, `leituras/${idLeitura}`), novaLeitura);
