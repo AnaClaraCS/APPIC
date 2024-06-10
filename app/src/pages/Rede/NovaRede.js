@@ -1,8 +1,10 @@
 // screens/NovaRede.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import RedeController from '../../controllers/redeController';
 
 const NovaRede = ({ navigation }) => {
+  const redeController = new RedeController();
   const [nome, setNome] = useState('');
   const [bssid, setBssid] = useState('');
 
@@ -10,19 +12,7 @@ const NovaRede = ({ navigation }) => {
     const rede = { nome, bssid };
 
     try {
-      const response = await fetch('http://localhost:3000/locais', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(rede),
-      });
-
-      if (response.ok) {
-        navigation.goBack();
-      } else {
-        alert('Erro ao salvar a rede');
-      }
+      await redeController.criarRede(rede);
     } catch (error) {
       console.error(error);
       alert('Erro ao salvar a rede');

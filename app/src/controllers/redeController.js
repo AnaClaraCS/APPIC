@@ -1,5 +1,5 @@
 import { getDatabase, ref, set, get, update, remove } from 'firebase/database';
-import { database } from '../../firebase.js';
+import { database } from '../firebase.js';
 import Rede from '../models/rede.js';
 
 class RedeController {

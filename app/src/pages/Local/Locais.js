@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native'; // Importe TouchableOpacity
+import LocalController from '../../controllers/localController';
 
 const Locais = ({ navigation }) => {
   
   const [locais, setLocais] = useState([]); // Store fetched local data
+  const localController = new LocalController();
 
-  const getLocais = async () => { // Use async/await for cleaner error handling
+  const getLocais = async () => {
     try {
-      const response = await fetch('http://10.0.2.2:3000/api/locais');
-      const json = await response.json();
-      setLocais(json);
+      const locais = await localController.obterLocais();
+      setLocais(locais);
     } catch (error) {
-      console.error(error); // Log the error for debugging
-      // Handle the error gracefully (e.g., display an error message to the user)
+      console.error(error);
     }
+  };
+
+  const handleLocalPress = (localId) => {
+    // Navegar para a página de informações do local, passando o ID do local como parâmetro
+    navigation.navigate('InformacoesLocal', { localId });
   };
 
   return (
@@ -31,7 +36,10 @@ const Locais = ({ navigation }) => {
       {locais.length > 0 && ( // Conditionally render local descriptions if fetched
         <View>
           {locais.map((local) => (
-            <Text key={local.idLocal}>{local.descricao}</Text>
+            // Utilize TouchableOpacity para cada item da lista e adicione um onPress handler
+            <TouchableOpacity key={local.idLocal} onPress={() => handleLocalPress(local.idLocal)}>
+              <Text>{local.descricao}</Text>
+            </TouchableOpacity>
           ))}
         </View>
       )}

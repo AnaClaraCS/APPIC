@@ -1,5 +1,6 @@
 import { getDatabase, ref, set, get, update, remove, push } from 'firebase/database';
-import { database } from '../../firebase.js';
+//import { getDatabase, ref, set, get, update, remove, push } from '../firebase.js';
+import { database } from '../firebase.js';
 import Local from '../models/local.js';
 
 class LocalController {

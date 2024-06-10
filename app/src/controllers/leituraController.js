@@ -1,5 +1,5 @@
 import { getDatabase, ref, set, get, update, remove, push } from 'firebase/database';
-import { database } from '../../firebase.js';
+import { database } from '../firebase.js';
 import Leitura from '../models/leitura.js';
 
 class LeituraController {

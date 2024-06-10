@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import LocalController from '../../controllers/localController';
 
 const NovoLocal = ({ navigation }) => {
+  const localController = new LocalController();
   const [descricao, setDescricao] = useState('');
   const [coordX, setCoordX] = useState('');
   const [coordY, setCoordY] = useState('');
@@ -12,19 +14,7 @@ const NovoLocal = ({ navigation }) => {
     console.log(local);
 
     try {
-      const response = await fetch('http://10.0.2.2:3000/api/locais', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(local),
-      });
-
-      if (response.ok) {
-        navigation.goBack();
-      } else {
-        alert('Erro ao salvar o local em response');
-      }
+      await localController.criarLocal(local);
     } catch (error) {
       console.error(error);
       alert('Erro ao salvar o local');
