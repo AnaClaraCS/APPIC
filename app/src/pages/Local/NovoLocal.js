@@ -5,19 +5,19 @@ import LocalController from '../../controllers/localController';
 const NovoLocal = ({ navigation }) => {
   const localController = new LocalController();
   const [descricao, setDescricao] = useState('');
-  const [coordX, setCoordX] = useState('');
-  const [coordY, setCoordY] = useState('');
+  const [x, setX] = useState('');
+  const [y, setY] = useState('');
   const [andar, setAndar] = useState('');
 
   const handleSave = async () => {
-    const local = { descricao, coordX, coordY, andar };
+    const local = { descricao, x, y, andar };
     console.log(local);
 
     try {
       await localController.criarLocal(local);
     } catch (error) {
       console.error(error);
-      alert('Erro ao salvar o local');
+      alert('Erro ao salvar o local'+local);
     }
   };
 
@@ -32,15 +32,15 @@ const NovoLocal = ({ navigation }) => {
       <Text style={styles.label}>Coordenada X:</Text>
       <TextInput
         style={styles.input}
-        value={coordX}
-        onChangeText={setCoordX}
+        value={x}
+        onChangeText={setX}
         keyboardType="numeric"
       />
       <Text style={styles.label}>Coordenada Y:</Text>
       <TextInput
         style={styles.input}
-        value={coordY}
-        onChangeText={setCoordY}
+        value={y}
+        onChangeText={setY}
         keyboardType="numeric"
       />
       <Text style={styles.label}>Andar:</Text>

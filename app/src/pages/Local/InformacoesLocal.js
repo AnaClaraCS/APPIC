@@ -8,8 +8,8 @@ const InformacoesLocal = ({ route, navigation }) => {
   const localController = new LocalController();
   const [local, setLocal] = useState(null);
   const [descricao, setDescricao] = useState('');
-  const [coordX, setCoordX] = useState('');
-  const [coordY, setCoordY] = useState('');
+  const [x, setX] = useState('');
+  const [y, setY] = useState('');
   const [andar, setAndar] = useState('');
 
   useEffect(() => {
@@ -23,8 +23,8 @@ const InformacoesLocal = ({ route, navigation }) => {
       if (localCarregado) {
         setLocal(localCarregado);
         setDescricao(localCarregado.descricao);
-        setCoordX(localCarregado.coordX);
-        setCoordY(localCarregado.coordY);
+        setX(localCarregado.x);
+        setY(localCarregado.y);
         setAndar(localCarregado.andar);
       } else {
         // Tratar caso o local não seja encontrado
@@ -37,7 +37,7 @@ const InformacoesLocal = ({ route, navigation }) => {
   };
 
   const handleEditar = async () => {
-    const localAtualizado = { descricao, coordX, coordY, andar };
+    const localAtualizado = { descricao, x, y, andar };
     try {
       await localController.atualizarLocal(localId, localAtualizado);
       Alert.alert('Sucesso', 'Local atualizado com sucesso');
@@ -77,15 +77,15 @@ const InformacoesLocal = ({ route, navigation }) => {
           <Text style={styles.label}>Coordenada X:</Text>
           <TextInput
             style={styles.input}
-            value={coordX}
-            onChangeText={setCoordX}
+            value={x}
+            onChangeText={setX}
             keyboardType="numeric"
           />
           <Text style={styles.label}>Coordenada Y:</Text>
           <TextInput
             style={styles.input}
-            value={coordY}
-            onChangeText={setCoordY}
+            value={y}
+            onChangeText={setY}
             keyboardType="numeric"
           />
           <Text style={styles.label}>Andar:</Text>
