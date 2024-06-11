@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import LeituraController from '../../controllers/leituraController';
 
 const NovaLeitura = ({ navigation }) => {
-  const [sensorId, setSensorId] = useState('');
-  const [value, setValue] = useState('');
-  const [timestamp, setTimestamp] = useState('');
+  const leituraController = new LeituraController();
+
+  const [idLocal, setIdLocal] = useState('');
+  const [rssi, setRssi] = useState('');
+  const [bssid, setBssid] = useState('');
 
   const handleSave = async () => {
-    const leitura = { sensorId, value, timestamp };
+    const leitura = { idLocal, rssi, bssid };
 
     try {
-      const response = await fetch('http://localhost:3000/locais', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(leitura),
-      });
-
-      if (response.ok) {
-        navigation.goBack();
-      } else {
-        alert('Erro ao salvar a leitura');
-      }
+      await leituraController.criarLeitura(leitura);
+      alert('Leitura salva');
+      navigation.goBack();
     } catch (error) {
       console.error(error);
       alert('Erro ao salvar a leitura');
@@ -34,21 +27,21 @@ const NovaLeitura = ({ navigation }) => {
       <Text style={styles.label}>ID do Sensor:</Text>
       <TextInput
         style={styles.input}
-        value={sensorId}
-        onChangeText={setSensorId}
+        value={idLocal}
+        onChangeText={setIdLocal}
       />
       <Text style={styles.label}>Valor:</Text>
       <TextInput
         style={styles.input}
-        value={value}
-        onChangeText={setValue}
+        value={rssi}
+        onChangeText={setRssi}
         keyboardType="numeric"
       />
       <Text style={styles.label}>Timestamp:</Text>
       <TextInput
         style={styles.input}
-        value={timestamp}
-        onChangeText={setTimestamp}
+        value={bssid}
+        onChangeText={setBssid}
         keyboardType="numeric"
       />
       <Button title="Salvar" onPress={handleSave} />
