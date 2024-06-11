@@ -15,6 +15,8 @@ const NovoLocal = ({ navigation }) => {
 
     try {
       await localController.criarLocal(local);
+      alert('Local salvo');
+      navigation.goBack();
     } catch (error) {
       console.error(error);
       alert('Erro ao salvar o local'+local);

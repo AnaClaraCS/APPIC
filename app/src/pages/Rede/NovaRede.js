@@ -13,6 +13,8 @@ const NovaRede = ({ navigation }) => {
 
     try {
       await redeController.criarRede(rede);
+      alert('Red salva');
+      navigation.goBack();
     } catch (error) {
       console.error(error);
       alert('Erro ao salvar a rede');
