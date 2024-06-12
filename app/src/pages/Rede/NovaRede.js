@@ -1,6 +1,6 @@
 // screens/NovaRede.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import RedeController from '../../controllers/redeController';
 
 const NovaRede = ({ navigation }) => {
@@ -8,9 +8,13 @@ const NovaRede = ({ navigation }) => {
   const [nome, setNome] = useState('');
   const [bssid, setBssid] = useState('');
 
-  const handleSave = async () => {
-    const rede = { nome, bssid };
+  const handleSalvar = async () => {
 
+    if(!validarInputs()){
+      return;
+    }
+
+    const rede = { nome, bssid };
     try {
       await redeController.criarRede(rede);
       alert('Red salva');
@@ -20,6 +24,14 @@ const NovaRede = ({ navigation }) => {
       alert('Erro ao salvar a rede');
     }
   };
+
+  const validarInputs = () => {
+    if( !nome ){
+      Alert.alert('Erro', 'Todos os campos devem ser preenchidos');
+      return false;
+    }
+    return true;
+  }
 
   return (
     <View style={styles.container}>
@@ -35,7 +47,7 @@ const NovaRede = ({ navigation }) => {
         value={bssid}
         onChangeText={setBssid}
       />
-      <Button title="Salvar" onPress={handleSave} />
+      <Button title="Salvar" onPress={handleSalvar} />
 
     </View>
   );
