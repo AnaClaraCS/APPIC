@@ -1,6 +1,8 @@
 import { getDatabase, ref, set, get, update, remove, push } from 'firebase/database';
 import { database } from '../firebase.js';
 import Leitura from '../models/leitura.js';
+import LocalController from './localController';
+import RedeController from './redeController';
 
 class LeituraController {
   constructor() {
@@ -56,6 +58,48 @@ class LeituraController {
   async deletarLeitura(idLeitura) {
     await remove(ref(this.database, `leituras/${idLeitura}`));
   }
+
+  async obterLeiturasDetalhadas() {
+    const leituras = await this.obterLeituras(); 
+    const localController = new LocalController();
+    const redeController = new RedeController();
+
+    const leiturasDetalhadas = await Promise.all(leituras.map(async (leitura) => {
+      const local = await localController.obterLocal(leitura.idLocal);
+      if (!local) {
+        //console.log(`Local não encontrado para idLocal: ${leitura.idLocal}`);
+        // Você pode decidir como tratar esse caso, por exemplo, atribuir uma descrição padrão
+        return {
+          ...leitura,
+          localDescricao: 'Local não encontrado',
+          redeNome: ''
+        };
+      }
+  
+      const rede = await redeController.obterRede(leitura.bssid);
+      if (!rede) {
+        //console.log(`Rede não encontrada para bssid: ${leitura.bssid}`);
+        // Você pode decidir como tratar esse caso, por exemplo, atribuir um nome de rede padrão
+        return {
+          ...leitura,
+          localDescricao: local.descricao,
+          redeNome: 'Rede não encontrada'
+        };
+      }
+  
+      return {
+        ...leitura,
+        localDescricao: local.descricao,
+        redeNome: rede.nome
+      };
+
+
+    }));
+  
+
+    return leiturasDetalhadas;
+  }
+
 }
 
 export default LeituraController;
