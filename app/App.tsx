@@ -16,6 +16,12 @@ import Home from './src/pages/home';
 import GeraListaWifi from './src/pages/GeraListaWifi';
 // @ts-ignore
 import InformacoesLocal from './src/pages/Local/InformacoesLocal';
+// @ts-ignore
+import InformacoesRede from './src/pages/Rede/InformacoesRede';
+// @ts-ignore
+import Redes from './src/pages/Rede/Redes';
+// @ts-ignore
+import Leituras from './src/pages/Leitura/Leituras';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +37,10 @@ export default function App() {
           <Stack.Screen name="Locais" component={Locais} options={{ title: 'Locais' }} />
           <Stack.Screen name="InformacoesLocal" component={InformacoesLocal} options={{ title: 'InformacoesLocal' }} />
           <Stack.Screen name="GeraListaWifi" component={GeraListaWifi} options={{ title: 'GeraListaWifi' }} />
+          <Stack.Screen name="InformacoesRede" component={InformacoesRede} options={{ title: 'InformacoesRede' }} />
+          <Stack.Screen name="Redes" component={Redes} options={{ title: 'Redes' }} />
+          <Stack.Screen name="Leituras" component={Leituras} options={{ title: 'Leituras' }} />
+
         </Stack.Navigator>
       </NavigationContainer>
 

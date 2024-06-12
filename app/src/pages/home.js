@@ -24,10 +24,21 @@ const Home = ({ navigation }) => {
         onPress={() => navigation.navigate('Locais')}
       />
 
-<Button
+      <Button
         title="Gerar leituras"
         onPress={() => navigation.navigate('GeraListaWifi')}
       />
+
+<Button
+        title="Redes"
+        onPress={() => navigation.navigate('Redes')}
+      />
+
+<Button
+        title="Leituras"
+        onPress={() => navigation.navigate('Leituras')}
+      />
+
 
     </View>
   );
