@@ -9,7 +9,11 @@ const NovoLocal = ({ navigation }) => {
   const [y, setY] = useState('');
   const [andar, setAndar] = useState('');
 
-  const handleSave = async () => {
+  const handleSalvar = async () => {
+    if(!validarInputs()){
+      return;
+    }
+
     const local = { descricao, x, y, andar };
     console.log(local);
 
@@ -22,6 +26,14 @@ const NovoLocal = ({ navigation }) => {
       alert('Erro ao salvar o local'+local);
     }
   };
+
+  const validarInputs = () => {
+    if( !descricao || !x || !y || !andar ){
+      Alert.alert('Erro', 'Todos os campos devem ser preenchidos');
+      return false;
+    }
+    return true;
+  }
 
   return (
     <View style={styles.container}>
@@ -52,7 +64,7 @@ const NovoLocal = ({ navigation }) => {
         onChangeText={setAndar}
         keyboardType="numeric"
       />
-      <Button title="Salvar" onPress={handleSave} />
+      <Button title="Salvar" onPress={handleSalvar} />
     </View>
   );
 };

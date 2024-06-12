@@ -6,14 +6,15 @@ import LeituraService from '../../services/LeituraService';
 const InformacoesLocal = ({ route, navigation }) => {
   const { localId } = route.params;
   const localController = new LocalController();
+
   const [local, setLocal] = useState(null);
   const [descricao, setDescricao] = useState('');
   const [x, setX] = useState('');
   const [y, setY] = useState('');
   const [andar, setAndar] = useState('');
+  const [editando, setEditando] = useState(false);
 
   useEffect(() => {
-    // Carregar informações do local ao iniciar o componente
     carregarLocal();
   }, []);
 
@@ -27,16 +28,32 @@ const InformacoesLocal = ({ route, navigation }) => {
         setY(localCarregado.y);
         setAndar(localCarregado.andar);
       } else {
-        // Tratar caso o local não seja encontrado
         Alert.alert('Erro', 'Local não encontrado');
+        navigation.goBack();
       }
     } catch (error) {
       console.error(error);
       Alert.alert('Erro', 'Erro ao carregar informações do local');
+      navigation.goBack();
     }
   };
 
   const handleEditar = async () => {
+    setDescricao(local.descricao);
+    setX(local.x);
+    setY(local.y);
+    setAndar(local.andar);
+    setEditando(true);
+  };
+
+  const handleCancelar = async () => {
+    setEditando(false);
+  };
+
+  const handleSalvar = async () => {
+    if (!validarInputs()) {
+      return;
+    }
     const localAtualizado = { descricao, x, y, andar };
     try {
       await localController.atualizarLocal(localId, localAtualizado);
@@ -47,11 +64,18 @@ const InformacoesLocal = ({ route, navigation }) => {
     }
   };
 
+  const validarInputs = () => {
+    if( !descricao || !x || !y || !andar ){
+      Alert.alert('Erro', 'Todos os campos devem ser preenchidos');
+      return false;
+    }
+    return true;
+  }
+
   const handleExcluir = async () => {
     try {
       await localController.deletarLocal(localId);
       Alert.alert('Sucesso', 'Local excluído com sucesso');
-      // Voltar para a tela anterior após excluir o local
       navigation.goBack();
     } catch (error) {
       console.error(error);
@@ -59,8 +83,7 @@ const InformacoesLocal = ({ route, navigation }) => {
     }
   };
 
-  const cadastrarLeituras = () => {
-    // Aqui você pode chamar a função do serviço de local para cadastrar leituras
+  const cadastrarLeituras = () => { 
     LeituraService.cadastrarLeituras(localId);
   };
 
@@ -73,6 +96,7 @@ const InformacoesLocal = ({ route, navigation }) => {
             style={styles.input}
             value={descricao}
             onChangeText={setDescricao}
+            editable={editando}
           />
           <Text style={styles.label}>Coordenada X:</Text>
           <TextInput
@@ -80,6 +104,7 @@ const InformacoesLocal = ({ route, navigation }) => {
             value={x}
             onChangeText={setX}
             keyboardType="numeric"
+            editable={editando}
           />
           <Text style={styles.label}>Coordenada Y:</Text>
           <TextInput
@@ -87,6 +112,7 @@ const InformacoesLocal = ({ route, navigation }) => {
             value={y}
             onChangeText={setY}
             keyboardType="numeric"
+            editable={editando}
           />
           <Text style={styles.label}>Andar:</Text>
           <TextInput
@@ -94,10 +120,21 @@ const InformacoesLocal = ({ route, navigation }) => {
             value={andar}
             onChangeText={setAndar}
             keyboardType="numeric"
+            editable={editando}
           />
-          <Button title="Editar" onPress={handleEditar} />
-          <Button title="Excluir" onPress={handleExcluir} />
-          <Button title="Cadastrar Leituras" onPress={cadastrarLeituras} />
+          {editando && (
+            <>
+              <Button title="Salvar" onPress={handleSalvar} />
+              <Button title="Cancelar" onPress={handleCancelar} />
+            </>
+          )}
+          {!editando && (
+            <>
+            <Button title="Editar" onPress={handleEditar} />
+            <Button title="Excluir" onPress={handleExcluir} />
+            <Button title="Cadastrar Leituras" onPress={cadastrarLeituras} />
+            </>
+          )}
         </>
       )}
     </View>
