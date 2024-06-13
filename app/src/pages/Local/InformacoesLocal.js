@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, Pressable } from 'react-native';
 import LocalController from '../../controllers/localController';
 import LeituraService from '../../services/LeituraService';
 
@@ -13,6 +13,7 @@ const InformacoesLocal = ({ route, navigation }) => {
   const [y, setY] = useState('');
   const [andar, setAndar] = useState('');
   const [editando, setEditando] = useState(false);
+  const [leituras, setLeituras] = useState([]);
 
   useEffect(() => {
     carregarLocal();
@@ -88,6 +89,11 @@ const InformacoesLocal = ({ route, navigation }) => {
     LeituraService.cadastrarLeituras(localId);
   };
 
+  const obterLeiturasPorLocal = async () => {
+    const leiturasObtidas = await LeituraService.obterLeiturasPorLocal(localId);
+    setLeituras(leiturasObtidas);
+  } 
+
   return (
     <View style={styles.container}>
       {local && (
@@ -134,8 +140,22 @@ const InformacoesLocal = ({ route, navigation }) => {
             <Button title="Editar" onPress={handleEditar} />
             <Button title="Excluir" onPress={handleExcluir} />
             <Button title="Cadastrar Leituras" onPress={cadastrarLeituras} />
+            <Button title="Listar leituras" onPress={obterLeiturasPorLocal} />
             </>
           )}
+          <ScrollView>
+        {leituras.length > 0 ? ( 
+          <View>
+            {leituras.map((leitura) => (
+              <Pressable key={leitura.idLeitura} onPress={() => handleLeituraPress(leitura.idLeitura)}>
+                <Text>{`${leitura.localDescricao} - ${leitura.redeNome} - ${leitura.rssi} - ${leitura.data}`}</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : (
+          <Text>Nenhuma leitura encontrada</Text>
+        )}
+      </ScrollView>
         </>
       )}
     </View>

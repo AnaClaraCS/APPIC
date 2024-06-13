@@ -46,6 +46,16 @@ const leituraService = {
       console.error('Erro ao cadastrar leituras:', error);
     }
   },
+
+  obterLeiturasPorLocal: async (idLocal) => {
+    const leituraController = new LeituraController();
+    const leituras = await leituraController.obterLeiturasDetalhadas();
+  
+    const leiturasPorLocal = leituras.filter(leitura => leitura.idLocal === idLocal);
+    console.log(leiturasPorLocal);
+    return leiturasPorLocal;
+  }
+
 };
 
 export default leituraService;
