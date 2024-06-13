@@ -2,12 +2,11 @@ import { getDatabase, ref, set, get, update, remove, push } from 'firebase/datab
 //import { getDatabase, ref, set, get, update, remove, push } from '../firebase.js';
 import { database } from '../firebase.js';
 import Local from '../models/local.js';
-import LeituraController from './leituraController.js';
+import { deletarLeiturasPorLocal } from './leituraController.js';
 
 class LocalController {
   constructor() {
     this.database = database;
-    this.leituraController = new LeituraController();
   }
 
   // Criar um novo local
@@ -43,17 +42,7 @@ class LocalController {
 
   // Deletar um local
   async deletarLocal(idLocal) {
-
-    const leituras = await this.leituraController.obterLeituras();
-
-    // Deletar leituras associadas ao local
-    const deletePromises = leituras
-      .filter(leitura => leitura.idLocal === idLocal)
-      .map(leitura => this.leituraController.deletarLeitura(leitura.idLeitura));
-      deletarLeiturasPorLocal
-    // Esperar que todas as leituras sejam deletadas
-    await Promise.all(deletePromises);
-
+    await deletarLeiturasPorLocal(idLocal);
     await remove(ref(this.database, `locais/${idLocal}`));
   }
 }
