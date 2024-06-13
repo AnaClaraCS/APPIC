@@ -57,6 +57,7 @@ const InformacoesLocal = ({ route, navigation }) => {
     const localAtualizado = { descricao, x, y, andar };
     try {
       await localController.atualizarLocal(localId, localAtualizado);
+      setEditando(false);
       Alert.alert('Sucesso', 'Local atualizado com sucesso');
     } catch (error) {
       console.error(error);

@@ -1,6 +1,7 @@
 import WifiManager from 'react-native-wifi-reborn';
 import RedeController from '../controllers/redeController.js';
 import LeituraController from '../controllers/leituraController.js';
+import Rede from '../models/rede.js';
 
 const leituraService = {
   cadastrarLeituras: async (idLocal) => {
@@ -11,25 +12,33 @@ const leituraService = {
       // Salva as redes Wi-Fi associadas ao local usando o RedeController
       const redeController = new RedeController();
       const leituraController = new LeituraController();
-      let redeBSSID;
+      let rede;
 
       await Promise.all(wifiList.map(async (wifi) => {
         try {
-            if (wifi.BSSID && wifi.SSID) {
-                const redeBSSID = await redeController.criarRede({
-                  bssid: wifi.BSSID,
-                  nome: wifi.SSID
-                });
-                await leituraController.criarLeitura({
-                  idLocal: idLocal,
-                  bssid: redeBSSID,
-                  rssi: wifi.level
-                });
-              } else {
-                console.warn('Wifi entry missing BSSID or SSID', wifi);
-              }
+          console.log(wifi.BSSID+" - "+wifi.SSID);
+
+          if (wifi.BSSID) {
+            rede = new Rede(bssid=wifi.BSSID, nome=wifi.SSID || 'Sem nome');
+
+            if(redeController.obterRede(rede.bssid)){
+              rede.bssid = await redeController.atualizarRede(rede.bssid, rede);
+            }
+            else{
+              rede.bssid = await redeController.criarRede(rede);
+            }
+            console.log(rede);
+            
+            await leituraController.criarLeitura({
+              idLocal: idLocal,
+              bssid: rede.bssid,
+              rssi: wifi.level
+            });
+          } else {
+            console.log('Wifi sem BSSID', wifi);
+          }
         } catch (error) {
-          console.error('Erro ao salvar leitura:', error);
+          console.log('Erro ao salvar leitura:', error);
         }
       }));
 

@@ -1,4 +1,4 @@
-import { getDatabase, ref, set, get, update, remove } from 'firebase/database';
+import { ref, set, get, update, remove } from 'firebase/database';
 import { database } from '../firebase.js';
 import Rede from '../models/rede.js';
 
@@ -39,6 +39,7 @@ class RedeController {
 
   // Obter uma rede específica pelo BSSID
   async obterRede(bssid) {
+    bssid = this.codificarBSSID(bssid);
     const snapshot = await get(ref(this.database, `redes/${bssid}`));
     const rede = snapshot.val();
     return rede || null;
@@ -46,11 +47,14 @@ class RedeController {
 
   // Atualizar uma rede
   async atualizarRede(bssid, dadosAtualizados) {
+    bssid = this.codificarBSSID(bssid);
     await update(ref(this.database, `redes/${bssid}`), dadosAtualizados);
+    return bssid;
   }
 
   // Deletar uma rede
   async deletarRede(bssid) {
+    bssid = this.codificarBSSID(bssid);
     await remove(ref(this.database, `redes/${bssid}`));
   }
 }

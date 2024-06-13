@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, ScrollView, Pressable } from 'react-native';
 import RedeController from '../../controllers/redeController';
 
 const Redes = ({ navigation }) => {
@@ -31,18 +31,19 @@ const Redes = ({ navigation }) => {
         onPress={() => navigation.navigate('NovaRede')}
       />
 
-      <Text> Lista de redes</Text>
-      {redes.length > 0 ? ( 
-        <View>
-          {redes.map((rede) => (
-            <TouchableOpacity key={rede.idRede} onPress={() => handleRedePress(rede.bssid)}>
-              <Text>{rede.nome} - {rede.bssid} </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      ) : (
-        <Text>Nenhuma rede encontrada</Text>
-      )}
+      <ScrollView>
+        {redes.length > 0 ? ( 
+          <View>
+            {redes.map((rede) => (
+              <Pressable key={rede.bssid} onPress={() => handleRedePress(rede.bssid)}>
+                <Text>{rede.nome} - {rede.bssid} </Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : (
+          <Text>Nenhuma rede encontrada</Text>
+        )}
+      </ScrollView>
       
     </View>
   );

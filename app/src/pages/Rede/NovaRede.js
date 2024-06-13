@@ -17,7 +17,7 @@ const NovaRede = ({ navigation }) => {
     const rede = { nome, bssid };
     try {
       await redeController.criarRede(rede);
-      alert('Red salva');
+      alert('Rede salva');
       navigation.goBack();
     } catch (error) {
       console.error(error);
