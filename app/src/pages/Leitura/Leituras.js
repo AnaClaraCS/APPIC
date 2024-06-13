@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Pressable } from 'react-native';
 import LeituraController from '../../controllers/leituraController';
 
 const Leituras = ({ navigation }) => {
@@ -31,18 +31,19 @@ const Leituras = ({ navigation }) => {
         onPress={() => navigation.navigate('NovaLeitura')}
       />
 
-      <Text> Lista de leituras</Text>
-      {leituras.length > 0 ? ( 
-        <View>
-          {leituras.map((leitura) => (
-            <TouchableOpacity key={leitura.idLeitura} onPress={() => handleLeituraPress(leitura.idLeitura)}>
-              <Text>{`${leitura.localDescricao} - ${leitura.redeNome} - ${leitura.rssi} - ${leitura.data}`}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      ) : (
-        <Text>Nenhuma leitura encontrada</Text>
-      )}
+      <ScrollView>
+        {leituras.length > 0 ? ( 
+          <View>
+            {leituras.map((leitura) => (
+              <Pressable key={leitura.idLeitura} onPress={() => handleLeituraPress(leitura.idLeitura)}>
+                <Text>{`${leitura.localDescricao} - ${leitura.redeNome} - ${leitura.rssi} - ${leitura.data}`}</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : (
+          <Text>Nenhuma leitura encontrada</Text>
+        )}
+      </ScrollView>
       
     </View>
   );
