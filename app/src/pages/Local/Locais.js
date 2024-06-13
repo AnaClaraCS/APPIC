@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Pressable } from 'react-native';
 import LocalController from '../../controllers/localController';
 
 const Locais = ({ navigation }) => {
@@ -30,19 +30,20 @@ const Locais = ({ navigation }) => {
         title="Novo local"
         onPress={() => navigation.navigate('NovoLocal')}
       />
-
-      <Text> Lista de locais</Text>
-      {locais.length > 0 ? ( 
-        <View>
-          {locais.map((local) => (
-            <TouchableOpacity key={local.idLocal} onPress={() => handleLocalPress(local.idLocal)}>
-              <Text>{local.descricao}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      ) : (
-        <Text>Nenhum local encontrado</Text>
-      )}
+ 
+      <ScrollView>
+        {locais.length > 0 ? ( 
+          <View>
+            {locais.map((local) => (
+              <Pressable key={local.idLocal} onPress={() => handleLocalPress(local.idLocal)}>
+                <Text>{local.descricao}</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : (
+          <Text>Nenhum local encontrado</Text>
+        )}
+      </ScrollView>
       
     </View>
   );

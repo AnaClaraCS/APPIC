@@ -19,19 +19,19 @@ const leituraService = {
           console.log(wifi.BSSID+" - "+wifi.SSID);
 
           if (wifi.BSSID) {
-            rede = new Rede(bssid=wifi.BSSID, nome=wifi.SSID || 'Sem nome');
+            bssid=redeController.codificarBSSID(wifi.BSSID);
+            rede = new Rede(bssid=bssid, nome=wifi.SSID || 'Sem nome');
 
-            if(redeController.obterRede(rede.bssid)){
-              rede.bssid = await redeController.atualizarRede(rede.bssid, rede);
+            if(redeController.obterRede(bssid)){
+              bssid = await redeController.atualizarRede(bssid, rede);
             }
             else{
-              rede.bssid = await redeController.criarRede(rede);
+              bssid = await redeController.criarRede(rede);
             }
-            console.log(rede);
             
             await leituraController.criarLeitura({
               idLocal: idLocal,
-              bssid: rede.bssid,
+              bssid: bssid,
               rssi: wifi.level
             });
           } else {
@@ -41,7 +41,6 @@ const leituraService = {
           console.log('Erro ao salvar leitura:', error);
         }
       }));
-
       console.log('Leituras cadastradas com sucesso.');
     } catch (error) {
       console.error('Erro ao cadastrar leituras:', error);
