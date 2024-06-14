@@ -1,5 +1,5 @@
 class Local {
-    constructor({ andar, descricao, x, y }, idLocal = '') {
+    constructor( {andar, descricao, x, y, idLocal = ''}) {
       this.idLocal = idLocal;
       this.andar = andar;
       this.descricao = descricao;
