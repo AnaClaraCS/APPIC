@@ -16,7 +16,7 @@ const Home = ({ navigation }) => {
         onPress={() => navigation.navigate('Redes')}
       />
 
-      <Button title="Nova rede"
+      {/* <Button title="Nova rede"
         onPress={() => navigation.navigate('NovaRede')}
       />
 
@@ -26,12 +26,19 @@ const Home = ({ navigation }) => {
 
       <Button title="Nova leitura"
         onPress={() => navigation.navigate('NovaLeitura')}
-      />
+      /> */}
 
       <Button title="Gerar leituras"
         onPress={() => navigation.navigate('GeraListaWifi')}
       />
 
+      <Button title="Calculando"
+        onPress={() => navigation.navigate('Calculando')}
+      />
+
+      <Button title="Mapa"
+        onPress={() => navigation.navigate('Mapa')}
+      />
     </View>
   );
 };

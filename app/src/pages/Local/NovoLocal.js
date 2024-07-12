@@ -13,9 +13,7 @@ const NovoLocal = ({ navigation }) => {
     if(!validarInputs()){
       return;
     }
-
     const local = { descricao, x, y, andar };
-    console.log(local);
 
     try {
       await localController.criarLocal(local);

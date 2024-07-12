@@ -17,6 +17,10 @@ import NovaLeitura from './src/pages/Leitura/NovaLeitura';
 import InformacoesLeitura from './src/pages/Leitura/InformacoesLeitura';
 import GeraListaWifi from './src/pages/GeraListaWifi';
 
+import Calculando from './src/pages/Calculo/Calculando';
+
+import Mapa from './src/pages/Mapa/Mapa';
+
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -44,6 +48,11 @@ export default function App() {
           <Stack.Screen name="InformacoesLeitura" component={InformacoesLeitura} options={{ title: 'Informações da Leitura' }} />
           
           <Stack.Screen name="GeraListaWifi" component={GeraListaWifi} options={{ title: 'GeraListaWifi' }} />
+          <Stack.Screen name="Calculando" component={Calculando} options={{ title: 'Calculando' }} />
+
+          <Stack.Screen name="Mapa" component={Mapa} options={{ title: 'Mapa' }} />
+
+
         </Stack.Navigator>
       </NavigationContainer>
     </PermissaoProvider>

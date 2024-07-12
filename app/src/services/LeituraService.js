@@ -5,6 +5,10 @@ import Rede from '../models/rede.js';
 
 const leituraService = {
   cadastrarLeituras: async (idLocal) => {
+    if(idLocal == null){
+      console.error("idLocal nulo");
+      return;
+    }
     try {
       // Obtém a lista de redes Wi-Fi disponíveis
       const wifiList = await WifiManager.loadWifiList();
@@ -28,7 +32,6 @@ const leituraService = {
             else{
               bssid = await redeController.criarRede(rede);
             }
-            
             await leituraController.criarLeitura({
               idLocal: idLocal,
               bssid: bssid,
@@ -46,15 +49,6 @@ const leituraService = {
       console.error('Erro ao cadastrar leituras:', error);
     }
   },
-
-  obterLeiturasPorLocal: async (idLocal) => {
-    const leituraController = new LeituraController();
-    const leituras = await leituraController.obterLeiturasDetalhadas();
-  
-    const leiturasPorLocal = leituras.filter(leitura => leitura.idLocal === idLocal);
-    console.log(leiturasPorLocal);
-    return leiturasPorLocal;
-  }
 
 };
 
