@@ -4,29 +4,21 @@ import { View, Button } from 'react-native';
 const Home = ({ navigation }) => {
   return (
     <View >
+      <Button title="Areas"
+        onPress={() => navigation.navigate('Areas')}
+      />
+
+      <Button title="Nova área"
+        onPress={() => navigation.navigate('NovaArea')}
+      />
+
       <Button title="Locais"
         onPress={() => navigation.navigate('Locais')}
       />
 
-      <Button title="Novo local"
-        onPress={() => navigation.navigate('NovoLocal')}
+      <Button title="Gerenciar redes"
+        onPress={() => navigation.navigate('GerenciarRedes')}
       />
-
-      <Button title="Redes"
-        onPress={() => navigation.navigate('Redes')}
-      />
-
-      {/* <Button title="Nova rede"
-        onPress={() => navigation.navigate('NovaRede')}
-      />
-
-      <Button title="Leituras"
-        onPress={() => navigation.navigate('Leituras')}
-      />
-
-      <Button title="Nova leitura"
-        onPress={() => navigation.navigate('NovaLeitura')}
-      /> */}
 
       <Button title="Gerar leituras"
         onPress={() => navigation.navigate('GeraListaWifi')}
@@ -38,6 +30,10 @@ const Home = ({ navigation }) => {
 
       <Button title="Mapa"
         onPress={() => navigation.navigate('Mapa')}
+      />
+
+      <Button title="Outros"
+        onPress={() => navigation.navigate('Outros')}
       />
     </View>
   );
