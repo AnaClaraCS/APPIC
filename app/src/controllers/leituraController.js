@@ -113,40 +113,40 @@ class LeituraController {
     return rede;
   }
 
-async obterLeiturasPorLocais(idsLocais) {
-  try {
-    const todasLeituras = await this.obterLeituras();
-    const leituras = todasLeituras.filter(leitura => idsLocais.includes(leitura.idLocal));
-    return leituras;
-  } catch (error) {
-    console.error('Erro ao obter leituras por locais:', error);
-    throw error;
+  async obterLeiturasPorLocais(idsLocais) {
+    try {
+      const todasLeituras = await this.obterLeituras();
+      const leituras = todasLeituras.filter(leitura => idsLocais.includes(leitura.idLocal));
+      return leituras;
+    } catch (error) {
+      console.error('Erro ao obter leituras por locais:', error);
+      throw error;
+    }
   }
-}
 
-async obterLeiturasPorLocal(idLocal) {
-  try {
-    const todasLeituras = await this.obterLeituras();
-    const leituras = todasLeituras.filter(leitura => leitura.idLocal === idLocal);
-    return leituras;
-  } catch (error) {
-    console.error('Erro ao obter leituras por local:', error);
-    throw error;
+  async obterLeiturasPorLocal(idLocal) {
+    try {
+      const todasLeituras = await this.obterLeituras();
+      const leituras = todasLeituras.filter(leitura => leitura.idLocal === idLocal);
+      return leituras;
+    } catch (error) {
+      console.error('Erro ao obter leituras por local:', error);
+      throw error;
+    }
   }
-}
 }
 
 export default LeituraController;
 
 export async function deletarLeiturasPorLocal(idLocal) {
-const leituraController = new LeituraController();
-const leituras = await leituraController.obterLeituras();
+  const leituraController = new LeituraController();
+  const leituras = await leituraController.obterLeituras();
 
-// Filtrar e deletar leituras associadas ao local
-const deletePromises = leituras
-  .filter(leitura => leitura.idLocal === idLocal)
-  .map(leitura => leituraController.deletarLeitura(leitura.idLeitura));
+  // Filtrar e deletar leituras associadas ao local
+  const deletePromises = leituras
+    .filter(leitura => leitura.idLocal === idLocal)
+    .map(leitura => leituraController.deletarLeitura(leitura.idLeitura));
 
-// Esperar que todas as leituras sejam deletadas
-await Promise.all(deletePromises);
+  // Esperar que todas as leituras sejam deletadas
+  await Promise.all(deletePromises);
 }

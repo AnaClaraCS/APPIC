@@ -3,17 +3,17 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import LocalController from '../../controllers/localController';
 
 const NovoLocal = ({ navigation }) => {
+  const { IdArea } = route.params;
   const localController = new LocalController();
   const [descricao, setDescricao] = useState('');
   const [x, setX] = useState('');
   const [y, setY] = useState('');
-  const [andar, setAndar] = useState('');
 
   const handleSalvar = async () => {
     if(!validarInputs()){
       return;
     }
-    const local = { descricao, x, y, andar };
+    const local = { descricao, x, y, IdArea};
 
     try {
       await localController.criarLocal(local);
@@ -26,7 +26,7 @@ const NovoLocal = ({ navigation }) => {
   };
 
   const validarInputs = () => {
-    if( !descricao || !x || !y || !andar ){
+    if( !descricao || !x || !y ){
       Alert.alert('Erro', 'Todos os campos devem ser preenchidos');
       return false;
     }
@@ -53,13 +53,6 @@ const NovoLocal = ({ navigation }) => {
         style={styles.input}
         value={y}
         onChangeText={setY}
-        keyboardType="numeric"
-      />
-      <Text style={styles.label}>Andar:</Text>
-      <TextInput
-        style={styles.input}
-        value={andar}
-        onChangeText={setAndar}
         keyboardType="numeric"
       />
       <Button title="Salvar" onPress={handleSalvar} />

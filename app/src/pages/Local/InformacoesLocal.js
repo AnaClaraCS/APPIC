@@ -11,7 +11,6 @@ const InformacoesLocal = ({ route, navigation }) => {
   const [descricao, setDescricao] = useState('');
   const [x, setX] = useState('');
   const [y, setY] = useState('');
-  const [andar, setAndar] = useState('');
   const [editando, setEditando] = useState(false);
 
   useEffect(() => {
@@ -26,7 +25,6 @@ const InformacoesLocal = ({ route, navigation }) => {
         setDescricao(localCarregado.descricao);
         setX(localCarregado.x);
         setY(localCarregado.y);
-        setAndar(localCarregado.andar);
       } else {
         Alert.alert('Erro', 'Local não encontrado');
         navigation.goBack();
@@ -42,7 +40,6 @@ const InformacoesLocal = ({ route, navigation }) => {
     setDescricao(local.descricao);
     setX(local.x);
     setY(local.y);
-    setAndar(local.andar);
     setEditando(true);
   };
 
@@ -54,7 +51,7 @@ const InformacoesLocal = ({ route, navigation }) => {
     if (!validarInputs()) {
       return;
     }
-    const localAtualizado = { descricao, x, y, andar };
+    const localAtualizado = { descricao, x, y, idArea };
     try {
       await localController.atualizarLocal(localId, localAtualizado);
       setEditando(false);
@@ -66,7 +63,7 @@ const InformacoesLocal = ({ route, navigation }) => {
   };
 
   const validarInputs = () => {
-    if( !descricao || !x || !y || !andar ){
+    if( !descricao || !x || !y ){
       Alert.alert('Erro', 'Todos os campos devem ser preenchidos');
       return false;
     }
@@ -112,14 +109,6 @@ const InformacoesLocal = ({ route, navigation }) => {
             style={styles.input}
             value={y}
             onChangeText={setY}
-            keyboardType="numeric"
-            editable={editando}
-          />
-          <Text style={styles.label}>Andar:</Text>
-          <TextInput
-            style={styles.input}
-            value={andar}
-            onChangeText={setAndar}
             keyboardType="numeric"
             editable={editando}
           />

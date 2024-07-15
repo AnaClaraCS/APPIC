@@ -11,6 +11,11 @@ class LocalController {
 
   // Criar um novo local
   async criarLocal(localData) {
+    const areaSnapshot = await get(ref(this.database, `areas/${localData.idArea}`));
+    if (!areaSnapshot.exists()) {
+      throw new Error(`Area com ID ${localData.idArea} não encontrado.`);
+    }
+
     const idLocal = await push(ref(this.database, 'locais')).key;
     const novoLocal = new Local(localData, idLocal);
     await set(ref(this.database, `locais/${idLocal}`), novoLocal);
@@ -48,3 +53,15 @@ class LocalController {
 }
 
 export default LocalController;
+
+export async function deletarLocaisPorArea(idArea) {
+  const localController = new LocalController();
+  const locais = await localController.obterLeituras();
+
+  // Filtrar e deletar locais associadas a area
+  const deletePromises = locais
+    .filter(local => local.idArea === idArea)
+    .map(local => localController.deletarLocal(local.idLeitura));
+
+  await Promise.all(deletePromises);
+}

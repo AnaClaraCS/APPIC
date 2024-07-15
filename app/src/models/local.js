@@ -1,12 +1,12 @@
 class Local {
-    constructor( {andar, descricao, x, y}, idLocal = '') {
-      this.idLocal = idLocal;
-      this.andar = andar;
-      this.descricao = descricao;
-      this.x = x;
-      this.y = y;
-    }
+  constructor( { descricao, x, y, idArea}, idLocal = '') {
+    this.idLocal = idLocal;
+    this.descricao = descricao;
+    this.x = x;
+    this.y = y;
+    this.idArea = idArea;
   }
+}
   
-  export default Local;
+export default Local;
   
