@@ -1,6 +1,7 @@
 // Importa os módulos necessários do Firebase
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, set, get, update, remove, push } from 'firebase/database';
+import { getStorage } from 'firebase/storage';
 
 // Configurações do Firebase
 const firebaseConfig = {
@@ -17,11 +18,13 @@ const firebaseConfig = {
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const storage = getStorage(app);
 
 // Exporta as instâncias do Firebase e do banco de dados
 export {
     app,
     database,
+    storage,
     getDatabase,
     ref,
     set,

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import LocalController from '../../controllers/localController';
 
-const NovoLocal = ({ navigation }) => {
+const NovoLocal = ({ route, navigation }) => {
   const { IdArea } = route.params;
   const localController = new LocalController();
   const [descricao, setDescricao] = useState('');
