@@ -3,11 +3,11 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import LocalController from '../../controllers/localController';
 
 const NovoLocal = ({ route, navigation }) => {
-  const { IdArea } = route.params;
+  const { IdArea, x, y } = route.params;
   const localController = new LocalController();
   const [descricao, setDescricao] = useState('');
-  const [x, setX] = useState('');
-  const [y, setY] = useState('');
+  // const [x, setX] = useState('');
+  // const [y, setY] = useState('');
 
   const handleSalvar = async () => {
     if(!validarInputs()){
@@ -26,7 +26,11 @@ const NovoLocal = ({ route, navigation }) => {
   };
 
   const validarInputs = () => {
-    if( !descricao || !x || !y ){
+    if(!x || !y || !IdArea){
+      Alert.alert('Erro', 'Erro ao passar informações da área do local');
+      return false;
+    }
+    else if( !descricao ){
       Alert.alert('Erro', 'Todos os campos devem ser preenchidos');
       return false;
     }
@@ -41,20 +45,20 @@ const NovoLocal = ({ route, navigation }) => {
         value={descricao}
         onChangeText={setDescricao}
       />
-      <Text style={styles.label}>Coordenada X:</Text>
-      <TextInput
+      <Text style={styles.label}>Coordenada X: {x}</Text>
+      {/* <TextInput
         style={styles.input}
         value={x}
         onChangeText={setX}
         keyboardType="numeric"
-      />
-      <Text style={styles.label}>Coordenada Y:</Text>
-      <TextInput
+      /> */}
+      <Text style={styles.label}>Coordenada Y:{y}</Text>
+      {/* <TextInput
         style={styles.input}
         value={y}
         onChangeText={setY}
         keyboardType="numeric"
-      />
+      /> */}
       <Button title="Salvar" onPress={handleSalvar} />
     </View>
   );

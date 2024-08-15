@@ -230,10 +230,10 @@ const AreaScreen = ({ route, navigation }) => {
           </TouchableOpacity> */}
         </View>
 
-        {/* <View style={styles.zoomButtons}>
+         <View style={styles.zoomButtons}>
           <Button title="+" onPress={handleZoomIn} />
-          <Button title="-" onPress={handleZoomOut} /> 
-        </View>  */}
+          <Button title="-" onPress={handleZoomOut} />
+        </View>  
 
       </View>
       <Button title="Novo local" onPress={() => criarNovoLocal()} />
