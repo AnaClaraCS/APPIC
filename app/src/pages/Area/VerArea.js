@@ -12,6 +12,7 @@ const AreaScreen = ({ route, navigation }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [larguraReal, setLarguraReal] = useState(0);
+  const [tamMira, setTamMira] = useState(20);
   
   // Refs para gerenciar o intervalo de movimento
   const moveImageIntervalRef = useRef(null);
@@ -64,8 +65,8 @@ const AreaScreen = ({ route, navigation }) => {
     console.log(`Tamanho da mira na tela: x: ${x}, y: ${y}`);
     const { x: offsetX, y: offsetY } = offset;
     console.log(`Tamanho do offset na tela: x: ${offsetX}, y: ${offsetY}`);
-    const coordX = (x - offsetX) * proporcao; 
-    const coordY = (y - offsetY) * proporcao;
+    const coordX = (x + tamMira/2 - offsetX) * proporcao; 
+    const coordY = (y + tamMira/2  - offsetY) * proporcao;
     console.log(`Coord da mira: x: ${coordX}, y: ${coordY}`);
   }
 
@@ -103,8 +104,8 @@ const AreaScreen = ({ route, navigation }) => {
 
   const moveMira = (dx, dy) => {
     setPosicaoMira((prev) => ({
-      x: Math.max(0, Math.min(prev.x + dx, containerSize.width - 10)),
-      y: Math.max(0, Math.min(prev.y + dy, containerSize.height - 10))
+      x: Math.max(0, Math.min(prev.x + dx, containerSize.width - tamMira/2)),
+      y: Math.max(0, Math.min(prev.y + dy, containerSize.height - tamMira/2))
     }));
   };
 
@@ -164,7 +165,7 @@ const AreaScreen = ({ route, navigation }) => {
         )}
         <Image
           source={require('../../assets/mira.png')}
-          style={[styles.crosshair, { left: posicaoMira.x, top: posicaoMira.y, width: 20, height: 20 }]}
+          style={[styles.crosshair, { left: posicaoMira.x, top: posicaoMira.y, width: tamMira, height: tamMira }]}
         />
       </View>
       <View style={styles.controls}>

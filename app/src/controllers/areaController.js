@@ -1,9 +1,12 @@
 import { getDatabase, ref, set, get, update, remove, push } from 'firebase/database';
 //import { getDatabase, ref, set, get, update, remove, push } from '../firebase.js';
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import ImageResizer from 'react-native-image-resizer';
+import ImagePicker from 'react-native-image-crop-picker';
 import { database, storage } from '../firebase.js';
 import Area from '../models/area.js';
 import { deletarLocaisPorArea } from './localController.js';
+import { Image } from 'react-native'; 
 
 class AreaController {
   constructor() {
@@ -14,10 +17,34 @@ class AreaController {
   // Upload de imagem e obtenção da URL
   async uploadImagemArea(idArea, uri) {
     try {
-      const response = await fetch(uri);
+      // Obtém as dimensões da imagem sem exibir uma interface para o usuário
+      const imageDimensions = await new Promise((resolve, reject) => {
+        Image.getSize(uri, (width, height) => {
+          resolve({ width, height });
+        }, reject);
+      });
+  
+      let { width, height } = imageDimensions;
+  
+      // Verifica se a imagem precisa ser rotacionada
+      let finalUri = uri;
+      if (width > height) {
+        const rotatedImage = await ImageResizer.createResizedImage(
+          uri,
+          height,
+          width,
+          'JPEG',
+          100,
+          90 // Rotaciona a imagem 90 graus
+        );
+        finalUri = rotatedImage.uri;
+      }
+  
+      // Faz o upload da imagem rotacionada ou original
+      const response = await fetch(finalUri);
       const blob = await response.blob();
       const storageRef = sRef(this.storage, `areas/${idArea}/imagem`);
-
+  
       await uploadBytes(storageRef, blob);
       const downloadURL = await getDownloadURL(storageRef);
       return downloadURL;
