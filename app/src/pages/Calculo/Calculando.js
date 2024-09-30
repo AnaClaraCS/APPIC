@@ -1,58 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
-import CalculoService from '../../services/Calculo3Service'; 
+import React, { useState } from 'react';
+import { View, Text, Button, ScrollView } from 'react-native';
+import LocalService from '../../services/LocalService';
+import SeparaLeituras from '../../services/SeparaLeituras'
+import LeituraAnaliseService from '../../services/LeituraAnaliseService';
+import TestarPrecisaoService from '../../services/TestarPrecisaoService';
+import FrequenciaBSSIDPorAreaService from '../../services/FrequenciaBSSIDPorAreaService';
+import BSSIDExclusivosPorAreaService from '../../services/BSSIDExclusivosPorAreaService';
 
-const ResultadoLeiturasScreen = () => {
-  const [resultado, setResultado] = useState(0);
+const LocalSimilarityScreen = () => {
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function carregarLeiturasFiltradas() {
-      try {
-        const  resultado = await CalculoService.calcularLeiturasFiltradas();
-        setResultado(resultado);
-      } catch (error) {
-        console.error('Erro ao carregar:', error);
-        // Tratar o erro conforme necessário
-      }
+
+  // Função para processar os BSSIDs e classificá-los por área
+  const processar = async () => {
+    setLoading(true); // Inicia o carregamento
+    try {
+      const localService = new LocalService();
+      const { locaisTeste, locaisBase } = await localService.classificarLocais();
+      console.log("Terminou local service -----------------");
+  
+      const separaLeituras = new SeparaLeituras();
+      const leiturasBase = await separaLeituras.filtrarLeiturasPorLocais(locaisBase);
+      const leiturasTeste = await separaLeituras.filtrarLeiturasPorLocais(locaisTeste);
+      
+      console.log("Terminou separa leituras --------------");
+  
+      //const leituraAnaliseService = new LeituraAnaliseService(locaisBase);
+      //const leiturasFiltradas = await leituraAnaliseService.analisarLeiturasPorBSSID(leiturasBase); // Certifique-se de aguardar a Promise aqui
+  
+      // console.log("Terminou análise das leituras --------------");
+  
+      //const frequencia = new BSSIDExclusivosPorAreaService(locaisBase);
+      //frequencia.analisarBSSIDExclusivosPorArea(leiturasBase);
+
+      const testarPrecisaoService = new TestarPrecisaoService(locaisTeste, leiturasTeste);
+      testarPrecisaoService.principal();
+     
+  
+    } catch (error) {
+      console.error('Erro:', error);
+    } finally {
+      setLoading(false); // Finaliza o carregamento
     }
-
-    carregarLeiturasFiltradas();
-  }, []);
-
-  const handleLeituraPress = (idLeitura) => {
-    // Implementação do handler para quando uma leitura é pressionada
-    console.log('Leitura pressionada:', idLeitura);
   };
+  
 
   return (
-    <Text>Vazio = {resultado}</Text>
-    // <ScrollView style={styles.container}>
-    //   {Object.entries(contagemPorLocal).map(([local, contagem]) => (
-    //     <View key={local} style={styles.localItem}>
-    //       <Text style={styles.localText}>{`${local}: ${contagem} leituras`}</Text>
-    //     </View>
-    //   ))}
-    //   {/* {leituras.map((leitura, index) => (
-    //     <Pressable key={`${leitura.idLeitura}-${index}`} onPress={() => handleLeituraPress(leitura.idLeitura)} style={styles.leituraItem}>
-    //       <Text>{`${leitura.idLeitura} - ${leitura.rssi} - ${leitura.data} - ${leitura.redeNome} - ${leitura.BSSID} - ${leitura.localDescricao}`}</Text>
-    //     </Pressable>
-    //   ))} */}
-    // </ScrollView>
+    <View style={{ flex: 1, padding: 20 }}>
+      <Button title="Processar" onPress={processar} />
+      
+      {loading && <Text>Processando...</Text>}
+
+     
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  leituraItem: {
-    padding: 12,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-  },
-});
-
-export default ResultadoLeiturasScreen;
+export default LocalSimilarityScreen;

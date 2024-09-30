@@ -4,7 +4,7 @@ import LocalController from '../../controllers/localController';
 import LeituraService from '../../services/LeituraService';
 
 const InformacoesLocal = ({ route, navigation }) => {
-  const { localId } = route.params;
+  const { idLocal } = route.params;
   const localController = new LocalController();
 
   const [local, setLocal] = useState(null);
@@ -19,12 +19,14 @@ const InformacoesLocal = ({ route, navigation }) => {
 
   const carregarLocal = async () => {
     try {
-      const localCarregado = await localController.obterLocal(localId);
+      console.log(idLocal);
+      const localCarregado = await localController.obterLocal(idLocal);
       if (localCarregado) {
         setLocal(localCarregado);
         setDescricao(localCarregado.descricao);
         setX(localCarregado.x);
         setY(localCarregado.y);
+        console.log(localCarregado);
       } else {
         Alert.alert('Erro', 'Local não encontrado');
         navigation.goBack();
@@ -53,7 +55,7 @@ const InformacoesLocal = ({ route, navigation }) => {
     }
     const localAtualizado = { descricao, x, y, idArea };
     try {
-      await localController.atualizarLocal(localId, localAtualizado);
+      await localController.atualizarLocal(idLocal, localAtualizado);
       setEditando(false);
       Alert.alert('Sucesso', 'Local atualizado com sucesso');
     } catch (error) {
@@ -72,7 +74,7 @@ const InformacoesLocal = ({ route, navigation }) => {
 
   const handleExcluir = async () => {
     try {
-      await localController.deletarLocal(localId);
+      await localController.deletarLocal(idLocal);
       Alert.alert('Sucesso', 'Local excluído com sucesso');
       navigation.goBack();
     } catch (error) {
@@ -82,7 +84,7 @@ const InformacoesLocal = ({ route, navigation }) => {
   };
 
   const cadastrarLeituras = () => { 
-    LeituraService.cadastrarLeituras(localId);
+    LeituraService.cadastrarLeituras(idLocal);
   };
 
   return (

@@ -62,6 +62,21 @@ class LeituraController {
     });
     return leitura;
   }
+
+  // Obter todas as leituras de um BSSID específico
+async obterLeiturasPorBssid(bssid) {
+  const snapshot = await get(ref(this.database, `leituras/${bssid}`));
+  const leituras = [];
+
+  if (snapshot.exists()) {
+    const leiturasPorBssid = snapshot.val();
+    Object.values(leiturasPorBssid).forEach((leitura) => {
+      leituras.push(leitura);
+    });
+  }
+
+  return leituras;
+}
   
   // Atualizar uma leitura
   async atualizarLeitura(idLeitura, dadosAtualizados) {

@@ -12,7 +12,7 @@ async function main() {
     const leituraController = new LeituraController();
 
     let redeID;
-    let localID;
+    let idLocal;
     let leituraID;
 
     // Criar uma nova rede
@@ -37,18 +37,18 @@ async function main() {
     });
 
     try {
-        localID = await localController.criarLocal(novoLocal);
-        console.log('Local criado com sucesso!'+localID);
+        idLocal = await localController.criarLocal(novoLocal);
+        console.log('Local criado com sucesso!'+idLocal);
     } catch (error) {
         console.error('Erro ao criar local:', error);
     }
 
     // Criar uma nova leitura
     try {
-        console.log(redeID+localID);
+        console.log(redeID+idLocal);
         const novaLeitura = new Leitura({
             bssid: redeID,
-            idLocal: localID,
+            idLocal: idLocal,
             rssi: -77,
         });
 
@@ -61,7 +61,7 @@ async function main() {
     const rede = await redeController.obterRede(redeID);
     console.log(rede);
 
-    const local = await localController.obterLocal(localID);
+    const local = await localController.obterLocal(idLocal);
     console.log(local);
 
     const leitura = await leituraController.obterLeitura(leituraID);

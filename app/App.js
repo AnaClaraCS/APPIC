@@ -32,6 +32,8 @@ import Areas from './src/pages/Area/Areas';
 import NovaArea from './src/pages/Area/NovaArea';
 import InformacoesArea from './src/pages/Area/InformacoesArea';
 import VerArea from './src/pages/Area/VerArea';
+import CriarLocal from './src/pages/Area/CriarLocal';
+import EscolherArea from './src/pages/Area/EscolherArea';
 
 const Stack = createStackNavigator();
 
@@ -61,6 +63,8 @@ export default function App() {
           <Stack.Screen name="NovaArea" component={NovaArea} options={{ title: 'Nova Area' }} />
           <Stack.Screen name="VerArea" component={VerArea} options={{ title: 'Ver Area' }} />
           <Stack.Screen name="InformacoesArea" component={InformacoesArea} options={{ title: 'Informações da Área' }} />
+          <Stack.Screen name="CriarLocal" component={CriarLocal} options={{ title: 'Criar Local' }} />
+          <Stack.Screen name="EscolherArea" component={EscolherArea} options={{ title: 'Escolher Area' }} />
           
           {/* Leitura */}
           <Stack.Screen name="Leituras" component={Leituras} options={{ title: 'Leituras' }} />

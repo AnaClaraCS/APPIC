@@ -5,7 +5,7 @@ import ImageResizer from 'react-native-image-resizer';
 import ImagePicker from 'react-native-image-crop-picker';
 import { database, storage } from '../firebase.js';
 import Area from '../models/area.js';
-import { deletarLocaisPorArea } from './localController.js';
+import { deletarLocaisPorArea, obterLocaisPorArea } from './localController.js';
 import { Image } from 'react-native'; 
 
 class AreaController {
@@ -110,6 +110,15 @@ class AreaController {
   async deletarArea(idArea) {
     await deletarLocaisPorArea(idArea);
     await remove(ref(this.database, `areas/${idArea}`));
+  }
+
+  async obterLocais(idArea) {
+    try {
+      return obterLocaisPorArea(idArea);
+    } catch (error) {
+      console.error('Erro ao obter locais da área:', error);
+      throw error;
+    }
   }
 }
 

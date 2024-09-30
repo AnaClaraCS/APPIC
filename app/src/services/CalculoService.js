@@ -174,11 +174,11 @@ class CalculoService {
   
   //   leituras.forEach(leitura => {
   //     const localDescricao = leitura.localDescricao;
-  //     const localId = leitura.idLocal;
+  //     const idLocal = leitura.idLocal;
   
   //     if (!contagemPorLocal[localDescricao]) {
   //       contagemPorLocal[localDescricao] = {
-  //         idLocal: localId,
+  //         idLocal: idLocal,
   //         descricao: localDescricao,
   //         contagem: 0
   //       };

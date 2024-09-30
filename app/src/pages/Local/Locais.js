@@ -20,15 +20,15 @@ const Locais = ({ navigation }) => {
     }
   };
 
-  const handleLocalPress = (localId) => {
-    navigation.navigate('InformacoesLocal', { localId });
+  const handleLocalPress = (idLocal) => {
+    navigation.navigate('InformacoesLocal', { idLocal });
   };
 
   return (
     <View style={styles.container}>
       <Button
         title="Novo local"
-        onPress={() => navigation.navigate('NovoLocal')}
+        onPress={() => navigation.navigate('EscolherArea')}
       />
  
       <ScrollView>

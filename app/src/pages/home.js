@@ -15,6 +15,9 @@ const Home = ({ navigation }) => {
       <Button title="Locais"
         onPress={() => navigation.navigate('Locais')}
       />
+      <Button title="Criar um local"
+        onPress={() => navigation.navigate('EscolherArea')}
+      />
 
       <Button title="Gerenciar redes"
         onPress={() => navigation.navigate('GerenciarRedes')}

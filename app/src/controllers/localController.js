@@ -1,5 +1,4 @@
 import { getDatabase, ref, set, get, update, remove, push } from 'firebase/database';
-//import { getDatabase, ref, set, get, update, remove, push } from '../firebase.js';
 import { database } from '../firebase.js';
 import Local from '../models/local.js';
 import { deletarLeiturasPorLocal } from './leituraController.js';
@@ -13,7 +12,7 @@ class LocalController {
   async criarLocal(localData) {
     const areaSnapshot = await get(ref(this.database, `areas/${localData.idArea}`));
     if (!areaSnapshot.exists()) {
-      throw new Error(`Area com ID ${localData.idArea} não encontrado.`);
+      throw new Error(`Area com ID ${localData.idArea} não encontrada.`);
     }
 
     const idLocal = await push(ref(this.database, 'locais')).key;
@@ -56,12 +55,27 @@ export default LocalController;
 
 export async function deletarLocaisPorArea(idArea) {
   const localController = new LocalController();
-  const locais = await localController.obterLeituras();
+  const locais = await localController.obterLocais();
 
-  // Filtrar e deletar locais associadas a area
+  // Filtrar e deletar locais associados a area
   const deletePromises = locais
     .filter(local => local.idArea === idArea)
-    .map(local => localController.deletarLocal(local.idLeitura));
+    .map(local => localController.deletarLocal(local.idLocal));
 
   await Promise.all(deletePromises);
+}
+
+export async function obterLocaisPorArea(idArea) {
+  try {
+    const localController = new LocalController();
+    const locais = await localController.obterLocais();
+
+    // Filtra locais associados à área especificada
+    const locaisDaArea = locais.filter(local => local.idArea === idArea);
+
+    return locaisDaArea;
+  } catch (error) {
+    console.error('Erro ao obter locais por área:', error);
+    throw error;
+  }
 }
