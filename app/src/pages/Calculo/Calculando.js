@@ -33,8 +33,8 @@ const LocalSimilarityScreen = () => {
       //const frequencia = new BSSIDExclusivosPorAreaService(locaisBase);
       //frequencia.analisarBSSIDExclusivosPorArea(leiturasBase);
 
-      const testarPrecisaoService = new TestarPrecisaoService(locaisTeste, leiturasTeste);
-      testarPrecisaoService.principal();
+       const testarPrecisaoService = new TestarPrecisaoService(locaisTeste, leiturasTeste);
+       testarPrecisaoService.principal();
      
   
     } catch (error) {

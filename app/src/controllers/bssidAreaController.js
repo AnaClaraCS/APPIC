@@ -6,14 +6,16 @@ class BssidAreaController {
     this.database = getDatabase(); // Inicializa o banco de dados do Firebase
   }
 
+  // Método para salvar uma BssidArea com duas listas: bssid_100frequentes e bssid_exclusivos
   async salvarBssidArea(bssidArea) {
-    const { idArea, lista_bssid } = bssidArea;
+    const { idArea, bssid_100frequentes, bssid_exclusivos } = bssidArea;
 
     try {
       const areaRef = ref(this.database, `bssid_area/${idArea}`);
       await set(areaRef, {
         idArea: idArea,
-        lista_bssid: lista_bssid
+        bssid_100frequentes: bssid_100frequentes,
+        bssid_exclusivos: bssid_exclusivos
       });
       console.log(`BssidArea salva/atualizada com sucesso para a área: ${idArea}`);
     } catch (error) {
@@ -22,32 +24,61 @@ class BssidAreaController {
     }
   }
 
-  async adicionarBssidParaArea(idArea, bssid) {
+  // Método para adicionar um BSSID à lista de bssid_100frequentes
+  async adicionarBssidFrequenteParaArea(idArea, bssid) {
     try {
       const areaRef = ref(this.database, `bssid_area/${idArea}`);
       const snapshot = await get(areaRef);
 
       if (snapshot.exists()) {
         const bssidArea = snapshot.val();
-        const bssidList = Array.isArray(bssidArea.lista_bssid) ? bssidArea.lista_bssid : [];
+        const bssidList = Array.isArray(bssidArea.bssid_100frequentes) ? bssidArea.bssid_100frequentes : [];
 
         if (!bssidList.includes(bssid)) {
           bssidList.push(bssid);
-          await update(areaRef, { lista_bssid: bssidList });
-          console.log(`BSSID ${bssid} adicionado à área ${idArea}`);
+          await update(areaRef, { bssid_100frequentes: bssidList });
+          console.log(`BSSID ${bssid} adicionado à lista de frequentes da área ${idArea}`);
         } else {
-          console.log(`BSSID ${bssid} já está associado à área ${idArea}`);
+          console.log(`BSSID ${bssid} já está associado à lista de frequentes da área ${idArea}`);
         }
       } else {
-        const novaBssidArea = new BssidArea(idArea, [bssid]);
+        const novaBssidArea = new BssidArea(idArea, [bssid], []);
         await this.salvarBssidArea(novaBssidArea);
       }
     } catch (error) {
-      console.error('Erro ao adicionar BSSID à área:', error);
+      console.error('Erro ao adicionar BSSID frequente à área:', error);
       throw error; // Repropaga o erro
     }
   }
 
+  // Método para adicionar um BSSID à lista de bssid_exclusivos
+  async adicionarBssidExclusivoParaArea(idArea, bssid) {
+    try {
+      const areaRef = ref(this.database, `bssid_area/${idArea}`);
+      const snapshot = await get(areaRef);
+
+      if (snapshot.exists()) {
+        const bssidArea = snapshot.val();
+        const bssidList = Array.isArray(bssidArea.bssid_exclusivos) ? bssidArea.bssid_exclusivos : [];
+
+        if (!bssidList.includes(bssid)) {
+          bssidList.push(bssid);
+          await update(areaRef, { bssid_exclusivos: bssidList });
+          console.log(`BSSID ${bssid} adicionado à lista de exclusivos da área ${idArea}`);
+        } else {
+          console.log(`BSSID ${bssid} já está associado à lista de exclusivos da área ${idArea}`);
+        }
+      } else {
+        const novaBssidArea = new BssidArea(idArea, [], [bssid]);
+        await this.salvarBssidArea(novaBssidArea);
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar BSSID exclusivo à área:', error);
+      throw error; // Repropaga o erro
+    }
+  }
+
+  // Método para buscar as listas de BSSID de uma área específica
   async buscarBssidPorArea(idArea) {
     try {
       const areaRef = ref(this.database, `bssid_area/${idArea}`);
@@ -55,10 +86,16 @@ class BssidAreaController {
 
       if (snapshot.exists()) {
         const bssidArea = snapshot.val();
-        return Array.isArray(bssidArea.lista_bssid) ? bssidArea.lista_bssid : [];
+        return {
+          bssid_100frequentes: Array.isArray(bssidArea.bssid_100frequentes) ? bssidArea.bssid_100frequentes : [],
+          bssid_exclusivos: Array.isArray(bssidArea.bssid_exclusivos) ? bssidArea.bssid_exclusivos : []
+        };
       } else {
         console.log(`Nenhuma BSSID encontrada para a área: ${idArea}`);
-        return [];
+        return {
+          bssid_100frequentes: [],
+          bssid_exclusivos: []
+        };
       }
     } catch (error) {
       console.error('Erro ao buscar BSSID por área:', error);
@@ -66,6 +103,7 @@ class BssidAreaController {
     }
   }
 
+  // Método para buscar todas as áreas e suas listas de BSSID
   async buscarTodasAreasEBSSIDs() {
     try {
       const areasRef = ref(this.database, 'bssid_area');

@@ -81,16 +81,52 @@ class FrequenciaBSSIDPorAreaService {
     return bssidComMediaRSSI;
   }
 
-  async salvarBSSIDSelecionados(bssidComMediaRSSI) {
-    // Para cada área, salvar os BSSIDs selecionados no Firebase
+  // Nova função para identificar BSSIDs exclusivos por área
+  identificarBSSIDExclusivos(leiturasPorArea) {
+    const bssidAreasMap = {};
+
+    // Mapeia os BSSIDs para todas as áreas em que aparecem
+    Object.entries(leiturasPorArea).forEach(([idArea, leiturasNaArea]) => {
+      const leiturasPorBSSID = this.agruparLeiturasPorBSSID(leiturasNaArea);
+
+      for (const bssid in leiturasPorBSSID) {
+        if (!bssidAreasMap[bssid]) {
+          bssidAreasMap[bssid] = new Set();
+        }
+        bssidAreasMap[bssid].add(idArea);
+      }
+    });
+
+    const bssidExclusivosPorArea = {};
+
+    // Filtra os BSSIDs que aparecem em apenas uma área
+    Object.entries(bssidAreasMap).forEach(([bssid, areas]) => {
+      if (areas.size === 1) {
+        const idArea = Array.from(areas)[0];
+        if (!bssidExclusivosPorArea[idArea]) {
+          bssidExclusivosPorArea[idArea] = [];
+        }
+        bssidExclusivosPorArea[idArea].push(bssid);
+      }
+    });
+
+    return bssidExclusivosPorArea;
+  }
+
+  async salvarBSSIDSelecionados(bssidComMediaRSSI, bssidExclusivosPorArea) {
+    // Para cada área, salvar os BSSIDs selecionados e exclusivos no Firebase
     for (const [idArea, bssidData] of Object.entries(bssidComMediaRSSI)) {
       const listaBssid = bssidData.map(({ bssid }) => bssid);
+      const listaBssidExclusivos = bssidExclusivosPorArea[idArea] || [];
 
       // Salva os BSSIDs no Firebase utilizando o BssidAreaController
+      console.log(`listaBssid: ${listaBssid}`);
+      console.log(`listaBssidExclusivos: ${listaBssidExclusivos}`);
       try {
         await this.bssidAreaController.salvarBssidArea({
           idArea,
-          lista_bssid: listaBssid
+          bssid_100frequentes: listaBssid || [],
+          bssid_exclusivos: listaBssidExclusivos || []
         });
         console.log(`BSSIDs salvos com sucesso para a área: ${idArea}`);
       } catch (error) {
@@ -109,6 +145,9 @@ class FrequenciaBSSIDPorAreaService {
     // Passo 2: Calcular a média de RSSI para os BSSID restantes e selecionar os 5 com maior média
     const bssidComMediaRSSI = this.calcularMediaRSSI(bssidFrequenciaTotal);
 
+    // Passo 3: Identificar BSSIDs exclusivos por área
+    const bssidExclusivosPorArea = this.identificarBSSIDExclusivos(bssidFrequenciaTotal);
+
     // Exibir resultados
     Object.entries(bssidComMediaRSSI).forEach(([idArea, bssidData]) => {
       console.log(`Área: ${idArea}`);
@@ -118,10 +157,16 @@ class FrequenciaBSSIDPorAreaService {
       console.log('--------------------------------------');
     });
 
-    // Passo 3: Salvar os BSSID selecionados no Firebase
-    await this.salvarBSSIDSelecionados(bssidComMediaRSSI);
+    // Exibir BSSIDs exclusivos
+    Object.entries(bssidExclusivosPorArea).forEach(([idArea, bssids]) => {
+      console.log(`Área: ${idArea} - BSSID Exclusivos: ${bssids.join(', ')}`);
+      console.log('--------------------------------------');
+    });
 
-    return bssidComMediaRSSI; // Retorna os BSSIDs exclusivos por área
+    // Passo 4: Salvar os BSSID selecionados e exclusivos no Firebase
+    await this.salvarBSSIDSelecionados(bssidComMediaRSSI, bssidExclusivosPorArea);
+
+    return { bssidComMediaRSSI, bssidExclusivosPorArea }; // Retorna os BSSIDs selecionados e exclusivos por área
   }
 }
 
